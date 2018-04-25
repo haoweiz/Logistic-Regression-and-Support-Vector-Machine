@@ -1,0 +1,61 @@
+--------------Logistic Regression-------------------
+Training set Accuracy:86.28%
+Validation set Accuracy:85.35%
+Testing set Accuracy:85.4%
+--------------SVM-------------------
+kernel = linear
+Validation set Accuracy: 93.64%
+Testing set Accuracy:93.78%
+
+gamma = 1
+Validation set Accuracy: 15.48%
+Testing set Accuracy:17.14%
+
+Default
+Validation set Accuracy: 94.02%
+Testing set Accuracy:94.42%
+
+C = 1
+Validation set Accuracy: 94.02%
+Testing set Accuracy:94.42%
+
+C = 10
+Validation set Accuracy: 96.18%
+Testing set Accuracy:96.1%
+
+C = 20
+Validation set Accuracy: 96.9%
+Testing set Accuracy:96.67%
+
+C = 30
+Validation set Accuracy: 97.1%
+Testing set Accuracy:97.04%
+
+C = 40
+Validation set Accuracy: 97.23%
+Testing set Accuracy:97.19%
+
+C = 50
+Validation set Accuracy: 97.31%
+Testing set Accuracy:97.19%
+
+C = 60
+Validation set Accuracy: 97.38%
+Testing set Accuracy:97.16%
+
+C = 70
+Validation set Accuracy: 97.36%
+Testing set Accuracy:97.26%
+
+C = 80
+Validation set Accuracy: 97.39%
+Testing set Accuracy:97.33%
+
+C = 90
+Validation set Accuracy: 97.36%
+Testing set Accuracy:97.34%
+
+C = 100
+Validation set Accuracy: 97.41%
+Testing set Accuracy:97.4%
+

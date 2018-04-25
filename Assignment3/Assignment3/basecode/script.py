@@ -206,6 +206,7 @@ def mlrPredict(W, data):
 def printAndwrite(strs):
     f.write(strs + '\n')
     print(strs)
+    f.flush()
 
 """
 Script for Logistic Regression
@@ -283,7 +284,7 @@ clf3 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
     max_iter=-1, probability=False, random_state=None, shrinking=True,
     tol=0.001, verbose=False)
 clf3.fit(train_data,train_label.flatten())
-printAndwrite('Default\n')
+printAndwrite('Default')
 printAndwrite('Validation set Accuracy: '+ str(100 * clf3.score(validation_data, validation_label.flatten()))+'%') 
 printAndwrite('Testing set Accuracy:' + str(100 * clf3.score(test_data, test_label.flatten())) + '%\n')
 
