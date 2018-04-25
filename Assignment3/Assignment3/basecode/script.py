@@ -1,8 +1,9 @@
 import numpy as np
 from scipy.io import loadmat
 from scipy.optimize import minimize
+from sklearn.svm import SVC
 
-
+f = open('result.txt','w')
 def preprocess():
     """ 
      Input:
@@ -202,12 +203,17 @@ def mlrPredict(W, data):
 
     return label
 
+def printAndwrite(strs):
+    f.write(strs + '\n')
+    print(strs)
 
 """
 Script for Logistic Regression
 """
 train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
 
+
+printAndwrite('--------------Logistic Regression-------------------')
 # number of classes
 n_class = 10
 
@@ -233,28 +239,78 @@ for i in range(n_class):
 
 # Find the accuracy on Training Dataset
 predicted_label = blrPredict(W, train_data)
-print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
+printAndwrite('Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
 
 # Find the accuracy on Validation Dataset
 predicted_label = blrPredict(W, validation_data)
-print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == validation_label).astype(float))) + '%')
+printAndwrite('Validation set Accuracy:' + str(100 * np.mean((predicted_label == validation_label).astype(float))) + '%')
 
 # Find the accuracy on Testing Dataset
 predicted_label = blrPredict(W, test_data)
-print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
+printAndwrite('Testing set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
 
 """
 Script for Support Vector Machine
 """
 
-print('\n\n--------------SVM-------------------\n\n')
+printAndwrite('--------------SVM-------------------')
 ##################
 # YOUR CODE HERE #
 ##################
+# kernel = 'linear'
+clf1 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+    degree=3, gamma=0.0, kernel='linear',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
+clf1.fit(train_data,train_label.flatten())
+printAndwrite('kernel = linear')
+printAndwrite('Validation set Accuracy: '+ str(100 * clf1.score(validation_data, validation_label.flatten()))+'%') 
+printAndwrite('Testing set Accuracy:' + str(100 * clf1.score(test_data, test_label.flatten())) + '%\n')
 
+# gamma = 1
+clf2 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+    degree=3, gamma=1.0, kernel='rbf',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
+clf2.fit(train_data,train_label.flatten())
+printAndwrite('gamma = 1')
+printAndwrite('Validation set Accuracy: '+ str(100 * clf2.score(validation_data, validation_label.flatten()))+'%') 
+printAndwrite('Testing set Accuracy:' + str(100 * clf2.score(test_data, test_label.flatten())) + '%\n')
 
+# Default
+clf3 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
+    degree=3, gamma=0.0, kernel='rbf',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
+clf3.fit(train_data,train_label.flatten())
+printAndwrite('Default\n')
+printAndwrite('Validation set Accuracy: '+ str(100 * clf3.score(validation_data, validation_label.flatten()))+'%') 
+printAndwrite('Testing set Accuracy:' + str(100 * clf3.score(test_data, test_label.flatten())) + '%\n')
+
+# C:{1,10,20,30,40,50,60,70,80,90,100}
+c = 1
+clf4 = SVC(C=c, cache_size=200, class_weight=None, coef0=0.0,
+    degree=3, gamma=0.0, kernel='rbf',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
+clf4.fit(train_data,train_label.flatten())
+printAndwrite('C = ' + str(c))
+printAndwrite('Validation set Accuracy: '+ str(100 * clf4.score(validation_data, validation_label.flatten()))+'%') 
+printAndwrite('Testing set Accuracy:' + str(100 * clf4.score(test_data, test_label.flatten())) + '%\n')
+
+for c in range(10,101,10):
+    clf5 = SVC(C=c, cache_size=200, class_weight=None, coef0=0.0,
+        degree=3, gamma=0.0, kernel='rbf',
+        max_iter=-1, probability=False, random_state=None, shrinking=True,
+        tol=0.001, verbose=False)
+    clf5.fit(train_data,train_label.flatten())
+    printAndwrite('C = ' + str(c))
+    printAndwrite('Validation set Accuracy: '+ str(100 * clf5.score(validation_data, validation_label.flatten()))+'%') 
+    printAndwrite('Testing set Accuracy:' + str(100 * clf5.score(test_data, test_label.flatten())) + '%\n')
+f.close()
 """
 Script for Extra Credit Part
+"""
 """
 # FOR EXTRA CREDIT ONLY
 W_b = np.zeros((n_feature + 1, n_class))
@@ -276,3 +332,4 @@ print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label_b == va
 # Find the accuracy on Testing Dataset
 predicted_label_b = mlrPredict(W_b, test_data)
 print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label_b == test_label).astype(float))) + '%')
+"""
