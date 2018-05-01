@@ -284,6 +284,7 @@ clf1 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
     tol=0.001, verbose=False)
 clf1.fit(train_data,train_label.flatten())
 printAndwrite('kernel = linear')
+printAndwrite('Training set Accuracy:' + str(100 * clf1.score(train_data, train_label.flatten())) + '%')
 printAndwrite('Validation set Accuracy: '+ str(100 * clf1.score(validation_data, validation_label.flatten()))+'%') 
 printAndwrite('Testing set Accuracy:' + str(100 * clf1.score(test_data, test_label.flatten())) + '%\n')
 
@@ -294,6 +295,7 @@ clf2 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
     tol=0.001, verbose=False)
 clf2.fit(train_data,train_label.flatten())
 printAndwrite('gamma = 1')
+printAndwrite('Training set Accuracy:' + str(100 * clf2.score(train_data, train_label.flatten())) + '%')
 printAndwrite('Validation set Accuracy: '+ str(100 * clf2.score(validation_data, validation_label.flatten()))+'%') 
 printAndwrite('Testing set Accuracy:' + str(100 * clf2.score(test_data, test_label.flatten())) + '%\n')
 
@@ -304,6 +306,7 @@ clf3 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
     tol=0.001, verbose=False)
 clf3.fit(train_data,train_label.flatten())
 printAndwrite('Default')
+printAndwrite('Training set Accuracy:' + str(100 * clf3.score(train_data, train_label.flatten())) + '%')
 printAndwrite('Validation set Accuracy: '+ str(100 * clf3.score(validation_data, validation_label.flatten()))+'%') 
 printAndwrite('Testing set Accuracy:' + str(100 * clf3.score(test_data, test_label.flatten())) + '%\n')
 
@@ -315,6 +318,7 @@ clf4 = SVC(C=c, cache_size=200, class_weight=None, coef0=0.0,
     tol=0.001, verbose=False)
 clf4.fit(train_data,train_label.flatten())
 printAndwrite('C = ' + str(c))
+printAndwrite('Training set Accuracy:' + str(100 * clf4.score(train_data, train_label.flatten())) + '%')
 printAndwrite('Validation set Accuracy: '+ str(100 * clf4.score(validation_data, validation_label.flatten()))+'%') 
 printAndwrite('Testing set Accuracy:' + str(100 * clf4.score(test_data, test_label.flatten())) + '%\n')
 
@@ -325,6 +329,7 @@ for c in range(10,101,10):
         tol=0.001, verbose=False)
     clf5.fit(train_data,train_label.flatten())
     printAndwrite('C = ' + str(c))
+    printAndwrite('Training set Accuracy:' + str(100 * clf5.score(train_data, train_label.flatten())) + '%')
     printAndwrite('Validation set Accuracy: '+ str(100 * clf5.score(validation_data, validation_label.flatten()))+'%') 
     printAndwrite('Testing set Accuracy:' + str(100 * clf5.score(test_data, test_label.flatten())) + '%\n')
 
