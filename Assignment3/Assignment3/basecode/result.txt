@@ -58,4 +58,8 @@ Testing set Accuracy:97.34%
 C = 100
 Validation set Accuracy: 97.41%
 Testing set Accuracy:97.4%
+--------------Multi-Logistic Regression-------------------
+Training set Accuracy:93.484%
+Validation set Accuracy:92.35%
+Testing set Accuracy:92.6%
 

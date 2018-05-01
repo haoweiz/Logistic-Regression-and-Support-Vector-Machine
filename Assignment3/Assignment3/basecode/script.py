@@ -166,11 +166,26 @@ def mlrObjFunction(params, *args):
         error_grad: the vector of size (D+1) x 10 representing the gradient of
                     error function
     """
-    n_data = train_data.shape[0]
-    n_feature = train_data.shape[1]
+    # train_data:(50000,715), labeli:(50000,10), params:(7160,)
+    train_data, labeli = args
+    n_data = train_data.shape[0]       #50000
+    n_feature = train_data.shape[1]    #715
+    n_class = labeli.shape[1]          #10
+    error_grad = np.zeros((n_feature + 1, n_class))   #(716,10)
     error = 0
-    error_grad = np.zeros((n_feature + 1, n_class))
+    train_data_bias = np.concatenate((np.ones(shape = (n_data,1)), train_data), axis = 1)  # (50000,716)
+    weight = params[:,np.newaxis].reshape(n_feature+1,n_class)   # (716,10)
 
+    for i in range(0, n_data):
+        theta_top = np.exp(np.dot(train_data_bias[i], weight)).reshape(1,n_class)              #(1,10)
+        theta_bottom = np.sum(theta_top, axis=1)           #(1,)
+        theta = theta_top / theta_bottom.reshape(theta_bottom.shape[0],1) #(1,1)
+        a = np.dot(train_data_bias[i].reshape(train_data_bias[i].shape[0], 1),theta - labeli[i].reshape(1, labeli[i].shape[0]))   #(716,10)
+        error_grad = np.add(error_grad, a)    #(716,10)
+        error += np.sum(labeli[i].reshape(1, labeli[i].shape[0]) * np.log(theta))  #1
+
+    error_grad = (error_grad/n_data).flatten()    #(7160,)
+    error = -n_data * error
     ##################
     # YOUR CODE HERE #
     ##################
@@ -194,8 +209,12 @@ def mlrPredict(W, data):
          corresponding feature vector given in data matrix
 
     """
-    label = np.zeros((data.shape[0], 1))
+    # W:(716,10)  data:(50000,715)
+    #label = np.zeros((data.shape[0], 1))
 
+    data_bias = np.concatenate((np.ones(shape = (data.shape[0],1)), data), axis = 1) #(50000,716)
+    label = np.argmax(np.dot(np.transpose(W),np.transpose(data_bias)),0)   #(10,716) * (716,50000) = (10,50000)
+    label = label.reshape(label.shape[0],1)
     ##################
     # YOUR CODE HERE #
     ##################
@@ -213,8 +232,6 @@ Script for Logistic Regression
 """
 train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
 
-
-printAndwrite('--------------Logistic Regression-------------------')
 # number of classes
 n_class = 10
 
@@ -227,6 +244,8 @@ n_feature = train_data.shape[1]
 Y = np.zeros((n_train, n_class))
 for i in range(n_class):
     Y[:, i] = (train_label == i).astype(int).ravel()
+
+printAndwrite('--------------Logistic Regression-------------------')
 
 # Logistic Regression with Gradient Descent
 W = np.zeros((n_feature + 1, n_class))
@@ -260,7 +279,7 @@ printAndwrite('--------------SVM-------------------')
 ##################
 # kernel = 'linear'
 clf1 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
-    degree=3, gamma=0.0, kernel='linear',
+    decision_function_shape='ovr', degree=3, gamma='auto', kernel='linear',
     max_iter=-1, probability=False, random_state=None, shrinking=True,
     tol=0.001, verbose=False)
 clf1.fit(train_data,train_label.flatten())
@@ -270,7 +289,7 @@ printAndwrite('Testing set Accuracy:' + str(100 * clf1.score(test_data, test_lab
 
 # gamma = 1
 clf2 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
-    degree=3, gamma=1.0, kernel='rbf',
+    decision_function_shape='ovr', degree=3, gamma=1.0, kernel='rbf',
     max_iter=-1, probability=False, random_state=None, shrinking=True,
     tol=0.001, verbose=False)
 clf2.fit(train_data,train_label.flatten())
@@ -280,7 +299,7 @@ printAndwrite('Testing set Accuracy:' + str(100 * clf2.score(test_data, test_lab
 
 # Default
 clf3 = SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
-    degree=3, gamma=0.0, kernel='rbf',
+    decision_function_shape='ovr', degree=3, gamma='auto', kernel='rbf',
     max_iter=-1, probability=False, random_state=None, shrinking=True,
     tol=0.001, verbose=False)
 clf3.fit(train_data,train_label.flatten())
@@ -291,7 +310,7 @@ printAndwrite('Testing set Accuracy:' + str(100 * clf3.score(test_data, test_lab
 # C:{1,10,20,30,40,50,60,70,80,90,100}
 c = 1
 clf4 = SVC(C=c, cache_size=200, class_weight=None, coef0=0.0,
-    degree=3, gamma=0.0, kernel='rbf',
+    decision_function_shape='ovr', degree=3, gamma='auto', kernel='rbf',
     max_iter=-1, probability=False, random_state=None, shrinking=True,
     tol=0.001, verbose=False)
 clf4.fit(train_data,train_label.flatten())
@@ -301,19 +320,22 @@ printAndwrite('Testing set Accuracy:' + str(100 * clf4.score(test_data, test_lab
 
 for c in range(10,101,10):
     clf5 = SVC(C=c, cache_size=200, class_weight=None, coef0=0.0,
-        degree=3, gamma=0.0, kernel='rbf',
+        decision_function_shape='ovr', degree=3, gamma='auto', kernel='rbf',
         max_iter=-1, probability=False, random_state=None, shrinking=True,
         tol=0.001, verbose=False)
     clf5.fit(train_data,train_label.flatten())
     printAndwrite('C = ' + str(c))
     printAndwrite('Validation set Accuracy: '+ str(100 * clf5.score(validation_data, validation_label.flatten()))+'%') 
     printAndwrite('Testing set Accuracy:' + str(100 * clf5.score(test_data, test_label.flatten())) + '%\n')
-f.close()
+
+
 """
 Script for Extra Credit Part
 """
-"""
+
 # FOR EXTRA CREDIT ONLY
+printAndwrite('--------------Multi-Logistic Regression-------------------')
+
 W_b = np.zeros((n_feature + 1, n_class))
 initialWeights_b = np.zeros((n_feature + 1, n_class))
 opts_b = {'maxiter': 100}
@@ -324,13 +346,14 @@ W_b = nn_params.x.reshape((n_feature + 1, n_class))
 
 # Find the accuracy on Training Dataset
 predicted_label_b = mlrPredict(W_b, train_data)
-print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label_b == train_label).astype(float))) + '%')
+printAndwrite('Training set Accuracy:' + str(100 * np.mean((predicted_label_b == train_label).astype(float))) + '%')
 
 # Find the accuracy on Validation Dataset
 predicted_label_b = mlrPredict(W_b, validation_data)
-print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label_b == validation_label).astype(float))) + '%')
+printAndwrite('Validation set Accuracy:' + str(100 * np.mean((predicted_label_b == validation_label).astype(float))) + '%')
 
 # Find the accuracy on Testing Dataset
 predicted_label_b = mlrPredict(W_b, test_data)
-print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label_b == test_label).astype(float))) + '%')
-"""
+printAndwrite('Testing set Accuracy:' + str(100 * np.mean((predicted_label_b == test_label).astype(float))) + '%')
+f.close()
+
