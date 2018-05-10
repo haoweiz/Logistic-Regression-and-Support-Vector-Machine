@@ -4,6 +4,12 @@ from scipy.optimize import minimize
 from sklearn.svm import SVC
 
 f = open('result.txt','w')
+
+def printAndwrite(strs):
+    f.write(strs + '\n')
+    print(strs)
+    f.flush()
+
 def preprocess():
     """ 
      Input:
@@ -119,6 +125,7 @@ def blrObjFunction(initialWeights, *args):
     # YOUR CODE HERE #
     ##################
     # HINT: Do not forget to add the bias term to your input data
+    #printAndwrite('error = ' + str(error));
     return error, error_grad
 
 
@@ -190,7 +197,7 @@ def mlrObjFunction(params, *args):
     # YOUR CODE HERE #
     ##################
     # HINT: Do not forget to add the bias term to your input data
-
+    #printAndwrite('error = ' + str(error));
     return error, error_grad
 
 
@@ -222,11 +229,6 @@ def mlrPredict(W, data):
 
     return label
 
-def printAndwrite(strs):
-    f.write(strs + '\n')
-    print(strs)
-    f.flush()
-
 """
 Script for Logistic Regression
 """
@@ -244,6 +246,7 @@ n_feature = train_data.shape[1]
 Y = np.zeros((n_train, n_class))
 for i in range(n_class):
     Y[:, i] = (train_label == i).astype(int).ravel()
+
 
 printAndwrite('--------------Logistic Regression-------------------')
 
@@ -348,6 +351,9 @@ opts_b = {'maxiter': 100}
 args_b = (train_data, Y)
 nn_params = minimize(mlrObjFunction, initialWeights_b, jac=True, args=args_b, method='CG', options=opts_b)
 W_b = nn_params.x.reshape((n_feature + 1, n_class))
+
+args_multi_test = (test_data, Ytest)
+error_multi_test = mlrObjFunction(W_b,*args_multi_test)
 
 # Find the accuracy on Training Dataset
 predicted_label_b = mlrPredict(W_b, train_data)
